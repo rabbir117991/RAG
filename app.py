@@ -8,6 +8,9 @@ from langchain_openai import ChatOpenAI
 from opencc import OpenCC
 import openai
 from openai import OpenAI
+
+from langchain.embeddings import OpenAIEmbeddings
+
 client = OpenAI ( )
 openai.api_key = os. getenv('OPENAI_API_KEY')
 
