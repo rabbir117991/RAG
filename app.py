@@ -44,3 +44,15 @@ def get_response():
     
     except Exception as e:
         return jsonify({'error': str(e)})
+def get_response():
+    user_input = request.json.get('user_input')
+    if not user_input:
+        return jsonify({'error': 'No question provided!'})
+    
+    try:
+        # 處理用戶輸入的邏輯
+        answer = f"Your question was: {user_input}. Here's a sample response!"
+        return jsonify({'response': answer})
+    
+    except Exception as e:
+        return jsonify({'error': str(e)})
