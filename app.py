@@ -15,30 +15,32 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     return render_template('index.html')
-@app.route('/hello', methods=['POST'])
-def hello():
-    return jsonify(message = 'Hello World !')
-
-if __name__ == '__main__':
-  app.run(debug=True)
-
-def get_response):
-user_input = request.form.get(user_input')
-db = None
-if not user_input:
-return jsonify({'error': 'No user input provided'})
-if user_input:
-embeddings = OpenAlEmbeddings)
-db = Chroma(persist_directory="./db/temp/",
-", embedding_function=embeddings)
-docs = b.similarity_search(user_input)
-Ilm = ChatOpenAl(
-model_name="gpt-4o"
-temperature=0.5
-chain = load_qa_chain(lIm, chain_type="stuff")
-with get_openai_callback() as cb:
-response = chain.invoke({"input_documents": docs, "question":user_input}, return_only_outputs=True)
-cc = OpenCC('s2t')
-answer=cc.convert(response|output_text'])
-chat_history.append(f'user': user_input, 'assistant': response['output_text']})
-return jsonify({'response': answer})
+@app.route('/response', methods=['POST'])
+def get_response():
+    user_input = request.json.get('user_input')
+    if not user_input:
+        return jsonify({'error': 'No user input provided'})
+    
+    try:
+        # 設置嵌入模型與檢索數據庫
+        embeddings = OpenAIEmbeddings()
+        db = Chroma(persist_directory="./db/temp/", embedding_function=embeddings)
+        
+        # 進行相似度檢索
+        docs = db.similarity_search(user_input)
+        
+        # 使用 ChatOpenAI 啟動生成模型
+        llm = ChatOpenAI(model_name="gpt-4", temperature=0.5)
+        chain = load_qa_chain(llm, chain_type="stuff")
+        
+        with get_openai_callback() as cb:
+            response = chain.invoke({"input_documents": docs, "question": user_input}, return_only_outputs=True)
+        
+        # 簡繁體轉換
+        cc = OpenCC('s2t')
+        answer = cc.convert(response['output_text'])
+        
+        return jsonify({'response': answer})
+    
+    except Exception as e:
+        return jsonify({'error': str(e)})
