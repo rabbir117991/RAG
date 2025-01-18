@@ -1,21 +1,36 @@
-const container = document.querySelector(".container");
-
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('/hello', {
-    method: 'POST', // 使用 POST 請求
-    headers: {
-    'Content-Type': 'text/plain',
-    },
-    body: JSON.stringify({}) // 要傳遞的訊息
-    })
-    .then(response => response.json())
-    .then(data => {
-    // 後端返回的訊息之後的動作
-        container.innerHTML = `<p>${data.message}</p>`;
-    })
-    .catch(error => {
-   //例外錯誤狀況處理
-    console.error('Error:', error);
+    const input = document.getElementById('userInput');
+    const button = document.getElementById('submitBtn');
+    const responseMessage = document.getElementById('responseMessage');
+
+    button.addEventListener('click', function() {
+        const userInput = input.value.trim();
+
+        if (!userInput) {
+            responseMessage.innerHTML = `<p class="error">Please enter a question!</p>`;
+            return;
+        }
+
+        // 清空之前的消息
+        responseMessage.innerHTML = `<p>Loading...</p>`;
+
+        fetch('/response', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_input: userInput }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                responseMessage.innerHTML = `<p class="error">${data.error}</p>`;
+            } else {
+                responseMessage.innerHTML = `<p>${data.response}</p>`;
+            }
+        })
+        .catch(error => {
+            responseMessage.innerHTML = `<p class="error">An error occurred: ${error.message}</p>`;
+        });
     });
 });
-   
