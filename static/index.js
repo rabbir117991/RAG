@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // 清空之前的消息
+        // 顯示加載中
         responseMessage.innerHTML = `<p>Loading...</p>`;
 
         fetch('/response', {
