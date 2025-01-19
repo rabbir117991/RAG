@@ -2,3 +2,4 @@ flask
 gunicorn
 langchain
 openai
+langchain-community
