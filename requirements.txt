@@ -3,3 +3,4 @@ gunicorn
 langchain
 openai
 langchain-community
+opencc
